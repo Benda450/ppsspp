@@ -1629,7 +1629,7 @@ static int sceNetAdhocPdpRecv(int id, void *addr, void * port, void *buf, void *
 			socket->nonblocking = flag;
 
 			// Valid Arguments
-			if (saddr != NULL && port != NULL && buf != NULL && len != NULL && *len > 0) { 
+			if (saddr != NULL && port != NULL && buf != NULL && len != NULL) { 
 #ifndef PDP_DIRTY_MAGIC
 				// Schedule Timeout Removal
 				//if (flag == 1) timeout = 0;
@@ -1686,7 +1686,7 @@ static int sceNetAdhocPdpRecv(int id, void *addr, void * port, void *buf, void *
 					memcpy(buf, dummyPeekBuf64k, std::min(received, *len));
 
 				if (received != SOCKET_ERROR && *len < received) {
-					WARN_LOG(SCENET, "sceNetAdhocPdpRecv[%i:%u]: Peeked %u/%u bytes from %s:%u\n", id, getLocalPort(pdpsocket.id), received, *len, ip2str(sin.sin_addr).c_str(), ntohs(sin.sin_port));
+					INFO_LOG(SCENET, "sceNetAdhocPdpRecv[%i:%u]: Peeked %u/%u bytes from %s:%u\n", id, getLocalPort(pdpsocket.id), received, *len, ip2str(sin.sin_addr).c_str(), ntohs(sin.sin_port));
 					*len = received;
 
 					// Peer MAC
@@ -5560,7 +5560,7 @@ void __NetMatchingCallbacks() //(int matchingId)
 		if (actionAfterMatchingMipsCall < 0) {
 			actionAfterMatchingMipsCall = __KernelRegisterActionType(AfterMatchingMipsCall::Create);
 		}
-		DEBUG_LOG(SCENET, "AdhocMatching - Remaining Events: %d", matchingEvents.size());
+		DEBUG_LOG(SCENET, "AdhocMatching - Remaining Events: %d", (int)matchingEvents.size());
 		DEBUG_LOG(SCENET, "AdhocMatchingCallback: [ID=%i][EVENT=%i][%s]", args[0], args[1], mac2str((SceNetEtherAddr*)Memory::GetPointer(args[2])).c_str());
 		AfterMatchingMipsCall* after = (AfterMatchingMipsCall*)__KernelCreateAction(actionAfterMatchingMipsCall);
 		after->SetData(args[0], args[1], args[2]);
