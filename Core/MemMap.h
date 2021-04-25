@@ -63,21 +63,6 @@ namespace Memory {
 // so be sure to load it into a 64-bit register.
 extern u8 *base; 
 
-// These are guaranteed to point to "low memory" addresses (sub-32-bit).
-// 64-bit: Pointers to low-mem (sub-0x10000000) mirror
-// 32-bit: Same as the corresponding physical/virtual pointers.
-// Broken into three chunks to workaround 32-bit mmap() limits.
-extern u8 *m_pRAM;
-extern u8 *m_pRAM2;
-extern u8 *m_pRAM3;
-extern u8 *m_pScratchPad;
-extern u8 *m_pVRAM;
-
-// 64-bit: Pointers to high-mem mirrors
-// 32-bit: Same as above
-extern u8 *m_pPhysicalRAM;
-extern u8 *m_pUncachedRAM;
-
 // This replaces RAM_NORMAL_SIZE at runtime.
 extern u32 g_MemorySize;
 extern u32 g_PSPModel;
@@ -301,8 +286,8 @@ inline bool IsValidAddress(const u32 address) {
 		return true;
 	} else if ((address & 0x3F800000) == 0x04000000) {
 		return true;
-	} else if ((address & 0xBFFF0000) == 0x00010000) {
-		return (address & 0x0000FFFF) < SCRATCHPAD_SIZE;
+	} else if ((address & 0xBFFFC000) == 0x00010000) {
+		return true;
 	} else if ((address & 0x3F000000) >= 0x08000000 && (address & 0x3F000000) < 0x08000000 + g_MemorySize) {
 		return true;
 	} else {
@@ -316,8 +301,8 @@ inline u32 ValidSize(const u32 address, const u32 requested_size) {
 		max_size = 0x08000000 + g_MemorySize - (address & 0x3FFFFFFF);
 	} else if ((address & 0x3F800000) == 0x04000000) {
 		max_size = 0x04800000 - (address & 0x3FFFFFFF);
-	} else if ((address & 0xBFFF0000) == 0x00010000) {
-		max_size = 0x00014000 - (address & 0xBFFFFFFF);
+	} else if ((address & 0xBFFFC000) == 0x00010000) {
+		max_size = 0x00014000 - (address & 0x3FFFFFFF);
 	} else if ((address & 0x3F000000) >= 0x08000000 && (address & 0x3F000000) < 0x08000000 + g_MemorySize) {
 		max_size = 0x08000000 + g_MemorySize - (address & 0x3FFFFFFF);
 	} else {
