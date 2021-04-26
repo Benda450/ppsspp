@@ -47,6 +47,7 @@ protected:
 	bool UseVerticalLayout() const;
 
 private:
+	UI::LinearLayout *AddTab(const char *tag, const std::string &title, bool skipContents = false);
 	void TriggerRestart(const char *why);
 
 	std::string gameID_;
@@ -66,6 +67,9 @@ private:
 	bool installed_;
 	bool otherinstalled_;
 #endif
+
+	UI::TabHolder *tabHolder_;
+	std::vector<UI::LinearLayout *> settingTabContents_;
 
 	// Event handlers
 	UI::EventReturn OnControlMapping(UI::EventParams &e);
