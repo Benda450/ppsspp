@@ -108,7 +108,7 @@ namespace Reporting
 	static std::thread crcThread;
 
 	static int CalculateCRCThread() {
-		setCurrentThreadName("ReportCRC");
+		SetCurrentThreadName("ReportCRC");
 
 		// TODO: Use the blockDevice from pspFileSystem?
 		FileLoader *fileLoader = ConstructFileLoader(crcFilename);
@@ -262,6 +262,8 @@ namespace Reporting
 	{
 		http::Client http;
 		Buffer theVoid;
+
+		http.SetUserAgent(StringFromFormat("PPSSPP/%s", PPSSPP_GIT_VERSION));
 
 		if (output == NULL)
 			output = &theVoid;
@@ -450,7 +452,7 @@ namespace Reporting
 	void AddScreenshotData(MultipartFormDataEncoder &postdata, std::string filename)
 	{
 		std::string data;
-		if (!filename.empty() && readFileToString(false, filename.c_str(), data))
+		if (!filename.empty() && File::ReadFileToString(false, filename.c_str(), data))
 			postdata.Add("screenshot", data, "screenshot.jpg", "image/jpeg");
 
 		const std::string iconFilename = "disc0:/PSP_GAME/ICON0.PNG";
@@ -462,7 +464,7 @@ namespace Reporting
 
 	int Process(int pos)
 	{
-		setCurrentThreadName("Report");
+		SetCurrentThreadName("Report");
 
 		Payload &payload = payloadBuffer[pos];
 		Buffer output;
@@ -552,7 +554,7 @@ namespace Reporting
 		if (!File::Exists(g_Config.flash0Directory + "/font/jpn0.pgf"))
 			return false;
 #else
-		FileInfo fo;
+		File::FileInfo fo;
 		if (!VFSGetFileInfo("flash0/font/jpn0.pgf", &fo))
 			return false;
 #endif
@@ -616,7 +618,7 @@ namespace Reporting
 	}
 
 	int ProcessPending() {
-		setCurrentThreadName("Report");
+		SetCurrentThreadName("Report");
 
 		std::unique_lock<std::mutex> guard(pendingMessageLock);
 		while (!pendingMessagesDone) {
