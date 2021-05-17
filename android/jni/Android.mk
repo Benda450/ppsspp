@@ -100,6 +100,8 @@ ARCH_FILES := \
   $(SRC)/Core/MIPS/ARM64/Arm64RegCacheFPU.cpp \
   $(SRC)/Core/Util/DisArm64.cpp \
   $(SRC)/GPU/Common/VertexDecoderArm64.cpp \
+  $(SRC)/ext/libpng17/arm/arm_init.c \
+  $(SRC)/ext/libpng17/arm/filter_neon_intrinsics.c \
   Arm64EmitterTest.cpp
 endif
 
@@ -250,6 +252,7 @@ EXEC_AND_LIB_FILES := \
   $(SRC)/Common/File/VFS/VFS.cpp \
   $(SRC)/Common/File/VFS/AssetReader.cpp \
   $(SRC)/Common/File/DiskFree.cpp \
+  $(SRC)/Common/File/Path.cpp \
   $(SRC)/Common/File/PathBrowser.cpp \
   $(SRC)/Common/File/FileUtil.cpp \
   $(SRC)/Common/File/DirListing.cpp \
@@ -595,7 +598,6 @@ LIBZSTD_FILES := \
   $(SRC)/ext/zstd/lib/common/threading.c \
   $(SRC)/ext/zstd/lib/common/xxhash.c \
   $(SRC)/ext/zstd/lib/common/zstd_common.c \
-  $(SRC)/ext/zstd/lib/common/zstd_trace.c \
   $(SRC)/ext/zstd/lib/compress/fse_compress.c \
   $(SRC)/ext/zstd/lib/compress/hist.c \
   $(SRC)/ext/zstd/lib/compress/huf_compress.c \
