@@ -941,6 +941,10 @@ static ConfigSetting controlSettings[] = {
 	ConfigSetting("AnalogRotationCWKeyX", "AnalogRotationKeyCWY", "AnalogRotationKeyCWScale", "ShowAnalogRotationCWKey", &g_Config.touchAnalogRotationCWKey, defaultTouchPosHide, true, true),
 	ConfigSetting("AnalogRotationCCWKeyX", "AnalogRotationKeyCCWY", "AnalogRotationKeyCCWScale", "ShowAnalogRotationCCWKey", &g_Config.touchAnalogRotationCCWKey, defaultTouchPosHide, true, true),
 
+	ConfigSetting("LeftStickHeadScale", &g_Config.fLeftStickHeadScale, 1.0f, true, true),
+	ConfigSetting("RightStickHeadScale", &g_Config.fRightStickHeadScale, 1.0f, true, true),
+	ConfigSetting("HideStickBackground", &g_Config.bHideStickBackground, false, true, true),
+
 #ifdef _WIN32
 	ConfigSetting("DInputAnalogDeadzone", &g_Config.fDInputAnalogDeadzone, 0.1f, true, true),
 	ConfigSetting("DInputAnalogInverseMode", &g_Config.iDInputAnalogInverseMode, 0, true, true),
@@ -1780,6 +1784,8 @@ void Config::ResetControlLayout() {
 	reset(g_Config.touchRapidFireKey);
 	reset(g_Config.touchAnalogRotationCWKey);
 	reset(g_Config.touchAnalogRotationCCWKey);
+	g_Config.fLeftStickHeadScale = 1.0f;
+	g_Config.fRightStickHeadScale = 1.0f;
 }
 
 void Config::GetReportingInfo(UrlEncoder &data) {
