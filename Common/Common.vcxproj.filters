@@ -394,6 +394,9 @@
     <ClInclude Include="File\Path.h">
       <Filter>File</Filter>
     </ClInclude>
+    <ClInclude Include="File\AndroidStorage.h">
+      <Filter>File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ABI.cpp" />
@@ -758,6 +761,9 @@
       <Filter>Net</Filter>
     </ClCompile>
     <ClCompile Include="File\Path.cpp">
+      <Filter>File</Filter>
+    </ClCompile>
+    <ClCompile Include="File\AndroidStorage.cpp">
       <Filter>File</Filter>
     </ClCompile>
   </ItemGroup>
