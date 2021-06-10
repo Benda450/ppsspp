@@ -356,6 +356,10 @@ public:
 	ConfigTouchPos touchAnalogRotationCWKey;
 	ConfigTouchPos touchAnalogRotationCCWKey;
 
+	float fLeftStickHeadScale;
+	float fRightStickHeadScale;
+	bool bHideStickBackground;
+
 	// Controls Visibility
 	bool bShowTouchControls;
 
