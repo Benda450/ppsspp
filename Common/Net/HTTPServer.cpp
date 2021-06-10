@@ -33,18 +33,14 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <thread>
 
 #include "Common/Net/HTTPServer.h"
 #include "Common/Net/NetBuffer.h"
 #include "Common/Net/Sinks.h"
 #include "Common/File/FileDescriptor.h"
-
-#include "Common/Buffer.h"
 #include "Common/Log.h"
 
-
-void NewThreadExecutor::Run(std::function<void()> func) {
+void NewThreadExecutor::Run(std::function<void()> &&func) {
 	threads_.push_back(std::thread(func));
 }
 
@@ -142,7 +138,7 @@ void Request::Close() {
 }
 
 Server::Server(NewThreadExecutor *executor)
-	: port_(0), executor_(executor) {
+	: executor_(executor) {
 	RegisterHandler("/", std::bind(&Server::HandleListing, this, std::placeholders::_1));
 	SetFallbackHandler(std::bind(&Server::Handle404, this, std::placeholders::_1));
 }

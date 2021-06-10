@@ -23,7 +23,7 @@
 #include <algorithm>
 
 #include "Common/GPU/thin3d.h"
-#include "Common/Thread/ThreadManager.h"
+#include "Common/Thread/PrioritizedWorkQueue.h"
 #include "Common/File/VFS/VFS.h"
 #include "Common/File/FileUtil.h"
 #include "Common/File/Path.h"
@@ -214,8 +214,8 @@ bool GameInfo::LoadFromPath(const Path &gamePath) {
 
 std::shared_ptr<FileLoader> GameInfo::GetFileLoader() {
 	if (filePath_.empty()) {
-		// Happens when workqueue tries to figure out priorities,
-		// because Priority() calls GetFileLoader()... gnarly.
+		// Happens when workqueue tries to figure out priorities in PrioritizedWorkQueue::Pop(),
+		// because priority() calls GetFileLoader()... gnarly.
 		return fileLoader;
 	}
 	if (!fileLoader) {
@@ -331,7 +331,7 @@ static bool ReadVFSToString(const char *filename, std::string *contents, std::mu
 }
 
 
-class GameInfoWorkItem : public Task {
+class GameInfoWorkItem : public PrioritizedWorkQueueItem {
 public:
 	GameInfoWorkItem(const Path &gamePath, std::shared_ptr<GameInfo> &info)
 		: gamePath_(gamePath), info_(info) {
@@ -341,18 +341,15 @@ public:
 		info_->DisposeFileLoader();
 	}
 
-	void Run() override {
-		// NOTE! DO NOT early-return from this, always use "goto done". It's essential
-		// that we trigger the event.
-
+	void run() override {
 		if (!info_->LoadFromPath(gamePath_)) {
 			info_->pending = false;
-			goto done;
+			return;
 		}
 		// In case of a remote file, check if it actually exists before locking.
 		if (!info_->GetFileLoader()->Exists()) {
 			info_->pending = false;
-			goto done;
+			return;
 		}
 
 		info_->working = true;
@@ -374,8 +371,10 @@ public:
 					if (pbp.IsELF()) {
 						goto handleELF;
 					}
-					ERROR_LOG(LOADER, "invalid pbp '%s'\n", pbpLoader->GetPath().c_str());
-					goto done;
+					ERROR_LOG(LOADER, "invalid pbp '%s'\n", pbpLoader->GetPath().ToVisualString().c_str());
+					info_->pending = false;
+					info_->working = false;
+					return;
 				}
 
 				// First, PARAM.SFO.
@@ -542,11 +541,15 @@ handleELF:
 				// few files.
 				auto fl = info_->GetFileLoader();
 				if (!fl) {
-					goto done;
+					info_->pending = false;
+					info_->working = false;
+					return;  // Happens with UWP currently, TODO...
 				}
 				BlockDevice *bd = constructBlockDevice(info_->GetFileLoader().get());
 				if (!bd) {
-					goto done;
+					info_->pending = false;
+					info_->working = false;
+					return;  // nothing to do here..
 				}
 				ISOFileSystem umd(&handles, bd);
 
@@ -626,14 +629,12 @@ handleELF:
 			info_->installDataSize = info_->GetInstallDataSizeInBytes();
 		}
 
-done:
 		info_->pending = false;
 		info_->working = false;
-		info_->readyEvent.Notify();
 		// INFO_LOG(SYSTEM, "Completed writing info for %s", info_->GetTitle().c_str());
 	}
 
-	float Priority() override {
+	float priority() override {
 		auto fl = info_->GetFileLoader();
 		if (fl && fl->IsRemote()) {
 			// Increase the value so remote info loads after non-remote.
@@ -648,7 +649,7 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(GameInfoWorkItem);
 };
 
-GameInfoCache::GameInfoCache() {
+GameInfoCache::GameInfoCache() : gameInfoWQ_(nullptr) {
 	Init();
 }
 
@@ -657,15 +658,28 @@ GameInfoCache::~GameInfoCache() {
 	Shutdown();
 }
 
-void GameInfoCache::Init() {}
+void GameInfoCache::Init() {
+	gameInfoWQ_ = new PrioritizedWorkQueue();
+	ProcessWorkQueueOnThreadWhile(gameInfoWQ_);
+}
 
 void GameInfoCache::Shutdown() {
 	CancelAll();
+
+	if (gameInfoWQ_) {
+		StopProcessingWorkQueue(gameInfoWQ_);
+		delete gameInfoWQ_;
+		gameInfoWQ_ = nullptr;
+	}
 }
 
 void GameInfoCache::Clear() {
 	CancelAll();
 
+	if (gameInfoWQ_) {
+		gameInfoWQ_->Flush();
+		gameInfoWQ_->WaitUntilDone();
+	}
 	info_.clear();
 }
 
@@ -692,20 +706,30 @@ void GameInfoCache::FlushBGs() {
 }
 
 void GameInfoCache::PurgeType(IdentifiedFileType fileType) {
-	for (auto iter = info_.begin(); iter != info_.end();) {
+	if (gameInfoWQ_)
+		gameInfoWQ_->Flush();
+	restart:
+	for (auto iter = info_.begin(); iter != info_.end(); iter++) {
 		auto &info = iter->second;
-		info->readyEvent.Wait();
-		if (info->fileType == fileType) {
-			iter = info_.erase(iter);
-		} else {
-			iter++;
+		if (!info->working && info->fileType == fileType) {
+			info_.erase(iter);
+			goto restart;
 		}
 	}
 }
 
 void GameInfoCache::WaitUntilDone(std::shared_ptr<GameInfo> &info) {
-	info->readyEvent.Wait();
+	while (info->pending) {
+		if (gameInfoWQ_->WaitUntilDone(false)) {
+			// A true return means everything finished, so bail out.
+			// This way even if something gets stuck, we won't hang.
+			break;
+		}
+
+		// Otherwise, wait again if it's not done...
+	}
 }
+
 
 // Runs on the main thread. Only call from render() and similar, not update()!
 // Can also be called from the audio thread for menu background music.
@@ -752,11 +776,11 @@ std::shared_ptr<GameInfo> GameInfoCache::GetInfo(Draw::DrawContext *draw, const 
 	}
 
 	GameInfoWorkItem *item = new GameInfoWorkItem(gamePath, info);
-	g_threadManager.EnqueueTask(item);
+	gameInfoWQ_->Add(item);
 
 	// Don't re-insert if we already have it.
 	if (info_.find(pathStr) == info_.end())
-		info_[pathStr] = info;
+		info_[pathStr] = std::shared_ptr<GameInfo>(info);
 	return info;
 }
 

@@ -180,10 +180,10 @@
     <ClCompile Include="..\..\Common\Input\InputState.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\Thread\ThreadManager.cpp">
+    <ClCompile Include="..\..\Common\Thread\PrioritizedWorkQueue.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\Thread\ParallelLoop.cpp">
+    <ClCompile Include="..\..\Common\Thread\ThreadPool.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Common\Thread\ThreadUtil.cpp">
@@ -457,16 +457,10 @@
     <ClInclude Include="..\..\Common\Input\KeyCodes.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\Thread\Channel.h">
+    <ClInclude Include="..\..\Common\Thread\PrioritizedWorkQueue.h">
       <Filter>Thread</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\Thread\ParallelLoop.h">
-      <Filter>Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Common\Thread\Promise.h">
-      <Filter>Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Common\Thread\ThreadManager.h">
+    <ClInclude Include="..\..\Common\Thread\ThreadPool.h">
       <Filter>Thread</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Thread\ThreadUtil.h">
