@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "org.ppsspp.canary",
+  "variantName": "processNormalOptimizedResources",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 111020805,
+      "versionName": "1.11.2-805-canary-6-dirty",
+      "outputFile": "android-normal-optimized.apk"
+    }
+  ]
+}
