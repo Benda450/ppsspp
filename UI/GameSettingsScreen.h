@@ -82,7 +82,6 @@ private:
 	UI::EventReturn ClearShaderCache(UI::EventParams &e);
 	UI::EventReturn OnTiltTypeChange(UI::EventParams &e);
 	UI::EventReturn OnTiltCustomize(UI::EventParams &e);
-	UI::EventReturn OnComboKey(UI::EventParams &e);
 	UI::EventReturn OnCustomizeFPSCounterClick(UI::EventParams &e);
 
 	// Global settings handlers

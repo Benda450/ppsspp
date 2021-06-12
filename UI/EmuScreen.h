@@ -50,6 +50,8 @@ public:
 	bool key(const KeyInput &key) override;
 	bool axis(const AxisInput &axis) override;
 
+	void pspKey(int pspKeyCode, int flags);
+
 private:
 	void CreateViews() override;
 	UI::EventReturn OnDevTools(UI::EventParams &params);
@@ -64,7 +66,6 @@ private:
 	void renderUI();
 	void processAxis(const AxisInput &axis, int direction);
 
-	void pspKey(int pspKeyCode, int flags);
 	void onVKeyDown(int virtualKeyCode);
 	void onVKeyUp(int virtualKeyCode);
 	void setVKeyAnalog(char axis, int stick, int virtualKeyMin, int virtualKeyMax, bool setZero = true);
