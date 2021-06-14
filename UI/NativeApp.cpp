@@ -96,6 +96,7 @@
 #include "Core/Util/GameManager.h"
 #include "Core/Util/AudioFormat.h"
 #include "Core/WebServer.h"
+#include "Core/ThreadPools.h"
 
 #include "GPU/GPUInterface.h"
 #include "UI/BackgroundAudio.h"
@@ -336,6 +337,8 @@ static void PostLoadConfig() {
 		i18nrepo.LoadIni(g_Config.sLanguageIni);
 	else
 		i18nrepo.LoadIni(g_Config.sLanguageIni, langOverridePath);
+
+	g_threadManager.Init(cpu_info.num_cores, cpu_info.logical_cpu_count);
 }
 
 static bool CreateDirectoriesAndroid() {
@@ -457,9 +460,6 @@ void NativeInit(int argc, const char *argv[], const char *savegame_dir, const ch
 	std::string user_data_path = savegame_dir;
 	pendingMessages.clear();
 	pendingInputBoxes.clear();
-#if PPSSPP_PLATFORM(IOS)
-	user_data_path += "/";
-#endif
 
 	// external_dir has all kinds of meanings depending on platform.
 	// on iOS it's even the path to bundled app assets. It's a mess.
