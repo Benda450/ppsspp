@@ -98,7 +98,7 @@ if exist "%GIT_VERSION_FILE%" (
 
 echo // This is a generated file, by git-version-gen.cmd. > "%GIT_VERSION_TEMP%"
 echo. >> "%GIT_VERSION_TEMP%"
-echo const char *PPSSPP_GIT_VERSION = "%GIT_VERSION%"; >> "%GIT_VERSION_TEMP%"
+echo const char *PPSSPP_GIT_VERSION = "Canary %GIT_VERSION%"; >> "%GIT_VERSION_TEMP%"
 echo. >> "%GIT_VERSION_TEMP%"
 echo // If you don't want this file to update/recompile, change to 1. >> "%GIT_VERSION_TEMP%"
 echo #define PPSSPP_GIT_VERSION_NO_UPDATE 0 >> "%GIT_VERSION_TEMP%"

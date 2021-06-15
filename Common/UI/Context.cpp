@@ -37,8 +37,8 @@ void UIContext::Init(Draw::DrawContext *thin3d, Draw::Pipeline *uipipe, Draw::Pi
 
 void UIContext::BeginFrame() {
 	if (!uitexture_) {
-		uitexture_ = CreateTextureFromFile(draw_, "ui_atlas.zim", ImageFileType::ZIM, false);
-		_dbg_assert_msg_(uitexture_, "Failed to load ui_atlas.zim.\n\nPlace it in the directory \"assets\" under your PPSSPP directory.");
+		uitexture_ = CreateTextureFromFile(draw_, "ui_atlas_canary.zim", ImageFileType::ZIM, false);
+		_dbg_assert_msg_(uitexture_, "Failed to load ui_atlas_canary.zim.\n\nPlace it in the directory \"assets\" under your PPSSPP directory.");
 	}
 	uidrawbufferTop_->SetCurZ(0.0f);
 	uidrawbuffer_->SetCurZ(0.0f);

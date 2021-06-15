@@ -241,15 +241,15 @@ void __PPGeInit() {
 	int height[12]{};
 	int flags = 0;
 
-	bool loadedZIM = !skipZIM && LoadZIM("ppge_atlas.zim", width, height, &flags, imageData);
+	bool loadedZIM = !skipZIM && LoadZIM("ppge_atlas_canary.zim", width, height, &flags, imageData);
 	if (!skipZIM && !loadedZIM) {
-		ERROR_LOG(SCEGE, "Failed to load ppge_atlas.zim.\n\nPlace it in the directory \"assets\" under your PPSSPP directory.\n\nPPGe stuff will not be drawn.");
+		ERROR_LOG(SCEGE, "Failed to load ppge_atlas_canary.zim.\n\nPlace it in the directory \"assets\" under your PPSSPP directory.\n\nPPGe stuff will not be drawn.");
 	}
 
 	if (loadedZIM) {
 		size_t atlas_data_size;
 		if (!g_ppge_atlas.IsMetadataLoaded()) {
-			uint8_t *atlas_data = VFSReadFile("ppge_atlas.meta", &atlas_data_size);
+			uint8_t *atlas_data = VFSReadFile("ppge_atlas_canary.meta", &atlas_data_size);
 			if (atlas_data)
 				g_ppge_atlas.Load(atlas_data, atlas_data_size);
 			delete[] atlas_data;

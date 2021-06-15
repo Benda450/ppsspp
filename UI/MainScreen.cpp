@@ -1077,7 +1077,7 @@ void MainScreen::CreateViews() {
 	rightColumn->Add(rightColumnItems);
 
 	char versionString[256];
-	sprintf(versionString, "%s", PPSSPP_GIT_VERSION);
+	sprintf(versionString, "Canary");
 	rightColumnItems->SetSpacing(0.0f);
 	AnchorLayout *logos = new AnchorLayout(new AnchorLayoutParams(FILL_PARENT, 60.0f, false));
 	if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {

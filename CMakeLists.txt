@@ -2169,8 +2169,8 @@ if(WIN32)
 endif()
 
 set(NativeAssets
-	android/assets/ui_atlas.zim
-	android/assets/ui_atlas.meta
+	android/assets/ui_atlas_canary.zim
+	android/assets/ui_atlas_canary.meta
 	assets/lang
 	assets/shaders
 	assets/Roboto-Condensed.ttf
@@ -2178,8 +2178,8 @@ set(NativeAssets
 	assets/compat.ini
 	assets/gamecontrollerdb.txt
 	assets/langregion.ini
-	assets/ppge_atlas.zim
-	assets/ppge_atlas.meta
+	assets/ppge_atlas_canary.zim
+	assets/ppge_atlas_canary.meta
 	assets/rargray.png
 	assets/unknown.png
 	assets/zip.png
