@@ -1,1 +1,2 @@
-./ext/native/tools/build/atlastool ppge_atlasscript.txt ppge && rm ppge_atlas.cpp ppge_atlas.h && cp ppge_atlas.zim assets && cp ppge_atlas.meta assets && mv ppge_atlas.zim ppge_atlas.meta android/assets
+./ext/native/tools/build/atlastool ppge_atlasscript.txt ppge && rm ppge_atlas_canary.cpp ppge_atlas_canary.h && cp ppge_atlas_canary.zim assets && cp ppge_atlas_canary.meta assets && mv ppge_atlas_canary.zim ppge_atlas_canary.meta android/assets
+$SHELL

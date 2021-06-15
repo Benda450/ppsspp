@@ -130,7 +130,11 @@ void AssertCurrentThreadName(const char *threadName) {
 }
 
 int GetCurrentThreadIdForDebug() {
-#if PPSSPP_PLATFORM(WINDOWS)
+#if __LIBRETRO__
+	// Not sure why gettid() would not be available, but it isn't.
+	// The return value of this function is only used in unit tests anyway...
+	return 1;
+#elif PPSSPP_PLATFORM(WINDOWS)
 	return (int)GetCurrentThreadId();
 #elif PPSSPP_PLATFORM(MAC) || PPSSPP_PLATFORM(IOS) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	uint64_t tid = 0;
